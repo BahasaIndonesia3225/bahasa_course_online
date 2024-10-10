@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.course.server.mapper.my.MyQuestionMapper">
+    <select id="countGroupBySection" resultType="java.util.Map">
+        SELECT section_id, COUNT(*) as num
+        FROM question
+        GROUP BY section_id;
+    </select>
+</mapper>

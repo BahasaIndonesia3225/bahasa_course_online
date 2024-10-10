@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.course.server.mapper.MemberSectionPassMapper">
+  <resultMap id="BaseResultMap" type="com.course.server.domain.MemberSectionPass">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="section_id" jdbcType="CHAR" property="sectionId" />
+    <result column="pass" jdbcType="INTEGER" property="pass" />
+    <result column="member_id" jdbcType="CHAR" property="memberId" />
+    <result column="create_at" jdbcType="TIMESTAMP" property="createAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, section_id, pass, member_id, create_at, updated_at
+  </sql>
+  <select id="selectByExample" parameterType="com.course.server.domain.MemberSectionPassExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from member_section_pass
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from member_section_pass
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from member_section_pass
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.course.server.domain.MemberSectionPassExample">
+    delete from member_section_pass
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+    <delete id="deleteByUser"> delete from member_section_pass where member_id = #{memberId}</delete>
+    <insert id="insert" parameterType="com.course.server.domain.MemberSectionPass">
+    insert into member_section_pass (id, section_id, pass, 
+      member_id, create_at, updated_at
+      )
+    values (#{id,jdbcType=VARCHAR}, #{sectionId,jdbcType=CHAR}, #{pass,jdbcType=INTEGER}, 
+      #{memberId,jdbcType=CHAR}, #{createAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.course.server.domain.MemberSectionPass">
+    insert into member_section_pass
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sectionId != null">
+        section_id,
+      </if>
+      <if test="pass != null">
+        pass,
+      </if>
+      <if test="memberId != null">
+        member_id,
+      </if>
+      <if test="createAt != null">
+        create_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sectionId != null">
+        #{sectionId,jdbcType=CHAR},
+      </if>
+      <if test="pass != null">
+        #{pass,jdbcType=INTEGER},
+      </if>
+      <if test="memberId != null">
+        #{memberId,jdbcType=CHAR},
+      </if>
+      <if test="createAt != null">
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.course.server.domain.MemberSectionPassExample" resultType="java.lang.Long">
+    select count(*) from member_section_pass
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+    <select id="selectByMemberId"  parameterType="java.lang.String" resultMap="BaseResultMap">
+      select *, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS rownum from member_section_pass
+      where member_id = #{memberId} ORDER BY  rownum desc  limit 1
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+    update member_section_pass
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sectionId != null">
+        section_id = #{record.sectionId,jdbcType=CHAR},
+      </if>
+      <if test="record.pass != null">
+        pass = #{record.pass,jdbcType=INTEGER},
+      </if>
+      <if test="record.memberId != null">
+        member_id = #{record.memberId,jdbcType=CHAR},
+      </if>
+      <if test="record.createAt != null">
+        create_at = #{record.createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updatedAt != null">
+        updated_at = #{record.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update member_section_pass
+    set id = #{record.id,jdbcType=VARCHAR},
+      section_id = #{record.sectionId,jdbcType=CHAR},
+      pass = #{record.pass,jdbcType=INTEGER},
+      member_id = #{record.memberId,jdbcType=CHAR},
+      create_at = #{record.createAt,jdbcType=TIMESTAMP},
+      updated_at = #{record.updatedAt,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.course.server.domain.MemberSectionPass">
+    update member_section_pass
+    <set>
+      <if test="sectionId != null">
+        section_id = #{sectionId,jdbcType=CHAR},
+      </if>
+      <if test="pass != null">
+        pass = #{pass,jdbcType=INTEGER},
+      </if>
+      <if test="memberId != null">
+        member_id = #{memberId,jdbcType=CHAR},
+      </if>
+      <if test="createAt != null">
+        create_at = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.course.server.domain.MemberSectionPass">
+    update member_section_pass
+    set section_id = #{sectionId,jdbcType=CHAR},
+      pass = #{pass,jdbcType=INTEGER},
+      member_id = #{memberId,jdbcType=CHAR},
+      create_at = #{createAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

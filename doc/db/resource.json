@@ -1,0 +1,274 @@
+[
+    {
+        "id": "00",
+        "name": "欢迎",
+        "page": "welcome",
+        "request": null,
+        "parent": "",
+        "children": null
+    },
+    {
+        "id": "01",
+        "name": "系统管理",
+        "page": null,
+        "request": null,
+        "parent": "",
+        "children": [
+            {
+                "id": "0101",
+                "name": "用户管理",
+                "page": "system/user",
+                "request": null,
+                "parent": "01",
+                "children": [
+                    {
+                        "id": "010101",
+                        "name": "保存",
+                        "page": null,
+                        "request": "[\"/system/admin/user/list\",\"/system/admin/user/save\"]",
+                        "parent": "0101",
+                        "children": null
+                    },
+                    {
+                        "id": "010102",
+                        "name": "删除",
+                        "page": null,
+                        "request": "[\"/system/admin/user/delete\"]",
+                        "parent": "0101",
+                        "children": null
+                    },
+                    {
+                        "id": "010103",
+                        "name": "重置密码",
+                        "page": null,
+                        "request": "[\"/system/admin/user/save-password\"]",
+                        "parent": "0101",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": "0102",
+                "name": "资源管理",
+                "page": "system/resource",
+                "request": null,
+                "parent": "01",
+                "children": [
+                    {
+                        "id": "010201",
+                        "name": "保存/显示",
+                        "page": null,
+                        "request": "[\"/system/admin/resource\"]",
+                        "parent": "0102",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": "0103",
+                "name": "角色管理",
+                "page": "system/role",
+                "request": null,
+                "parent": "01",
+                "children": [
+                    {
+                        "id": "010301",
+                        "name": "角色/权限管理",
+                        "page": null,
+                        "request": "[\"/system/admin/role\"]",
+                        "parent": "0103",
+                        "children": null
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "02",
+        "name": "业务管理",
+        "page": null,
+        "request": null,
+        "parent": "",
+        "children": [
+            {
+                "id": "0201",
+                "name": "分类管理",
+                "page": "business/category",
+                "request": null,
+                "parent": "02",
+                "children": [
+                    {
+                        "id": "020101",
+                        "name": "增删改查",
+                        "page": null,
+                        "request": "[\"/business/admin/category\"]",
+                        "parent": "0201",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": "0202",
+                "name": "课程管理",
+                "page": "business/course",
+                "request": null,
+                "parent": "02",
+                "children": [
+                    {
+                        "id": "020201",
+                        "name": "增删改查",
+                        "page": null,
+                        "request": "[\"/business/admin/course\",\"/business/admin/category/all\",\"/file\"]",
+                        "parent": "0202",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": "0203",
+                "name": "讲师管理",
+                "page": "business/teacher",
+                "request": null,
+                "parent": "02",
+                "children": [
+                    {
+                        "id": "020301",
+                        "name": "增删改查",
+                        "page": null,
+                        "request": "[\"/business/admin/teacher\",\"/file\"]",
+                        "parent": "0203",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": "0204",
+                "name": "会员管理",
+                "page": "business/member",
+                "request": null,
+                "parent": "02",
+                "children": [
+                    {
+                        "id": "020401",
+                        "name": "增删改查",
+                        "page": null,
+                        "request": "[\"/business/admin/member\"]",
+                        "parent": "0204",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": "0205",
+                "name": "短信管理",
+                "page": "business/sms",
+                "request": null,
+                "parent": "02",
+                "children": [
+                    {
+                        "id": "020501",
+                        "name": "增删改查",
+                        "page": null,
+                        "request": "[\"/business/admin/sms\"]",
+                        "parent": "0205",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": "0206",
+                "name": "大章管理",
+                "page": "business/chapter",
+                "request": null,
+                "parent": "02",
+                "children": [
+                    {
+                        "id": "020601",
+                        "name": "增删改查",
+                        "page": null,
+                        "request": "[\"/business/admin/chapter\"]",
+                        "parent": "0206",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": "0207",
+                "name": "小节管理",
+                "page": "business/section",
+                "request": null,
+                "parent": "02",
+                "children": [
+                    {
+                        "id": "020701",
+                        "name": "增删改查",
+                        "page": null,
+                        "request": "[\"/business/admin/section\",\"/file\"]",
+                        "parent": "0207",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": "0208",
+                "name": "内容管理",
+                "page": "business/content",
+                "request": null,
+                "parent": "02",
+                "children": [
+                    {
+                        "id": "020801",
+                        "name": "增删改查",
+                        "page": null,
+                        "request": "[\"/business/admin/course\",\"/business/admin/course-content-file\",\"/file\"]",
+                        "parent": "0208",
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": "0209",
+                "name": "测试管理",
+                "page": "business/demo",
+                "request": null,
+                "parent": "02",
+                "children": [
+                    {
+                        "id": "020901",
+                        "name": "增删改查",
+                        "page": null,
+                        "request": "[\"/business/admin/demo\"]",
+                        "parent": "0209",
+                        "children": null
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "03",
+        "name": "文件管理",
+        "page": null,
+        "request": null,
+        "parent": "",
+        "children": [
+            {
+                "id": "0301",
+                "name": "文件管理",
+                "page": "file/file",
+                "request": null,
+                "parent": "03",
+                "children": [
+                    {
+                        "id": "030101",
+                        "name": "文件管理",
+                        "page": null,
+                        "request": "[\"/file/admin/file\"]",
+                        "parent": "0301",
+                        "children": null
+                    }
+                ]
+            }
+        ]
+    }
+]

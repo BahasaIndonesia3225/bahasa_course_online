@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.course.server.mapper.ConfigurationMapper">
+  <resultMap id="ConfigurationMap" type="com.course.server.domain.Configuration">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="configuration_key" jdbcType="VARCHAR" property="configurationKey" />
+    <result column="configuration_value" jdbcType="VARCHAR" property="configurationValue" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+  </resultMap>
+
+  <select id="selectConfigurationList" parameterType="com.course.server.domain.Configuration" resultMap="ConfigurationMap">
+    select *
+    from configuration
+   order by id
+  </select>
+
+  <delete id="deleteConfigurationById" parameterType="java.lang.Long">
+    delete from configuration
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+
+  <insert id="insertConfiguration" parameterType="com.course.server.domain.Configuration">
+    insert into configuration (`configuration_key`, `configuration_value`,`state`)
+    values (#{configurationKey,jdbcType=VARCHAR}, #{configurationValue,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR})
+  </insert>
+
+
+  <update id="updateConfiguration" parameterType="com.course.server.domain.Configuration">
+    update configuration
+    set `configuration_key` = #{name,jdbcType=VARCHAR},
+      `configuration_value` = #{desc,jdbcType=VARCHAR},
+      `state` = #{state,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+</mapper>
