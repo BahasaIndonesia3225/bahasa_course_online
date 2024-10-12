@@ -29,4 +29,6 @@ public interface MemberMapper {
     int updateByPrimaryKey(Member record);
 
     Member findByPhone(String mobile);
+
+    List<Member> selectByExampleH5(MemberExample memberExample);
 }

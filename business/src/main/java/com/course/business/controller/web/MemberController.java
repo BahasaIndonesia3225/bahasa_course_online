@@ -81,6 +81,22 @@ public class MemberController {
     }
 
     /**
+     *  用户修改经纬度
+     * @param memberDto
+     * @return
+     */
+    @RequestMapping(value = "/updateUserLat", method = RequestMethod.POST)
+    public ResponseDto updateUserLat(@RequestBody MemberDto memberDto,@RequestHeader("token") String token) {
+
+        ResponseDto responseDto = new ResponseDto();
+
+        //修改手机号码
+        responseDto.setContent(memberService.updateUserLat(token,memberDto));
+        // TODO 调第三方短信接口发送短信
+        return responseDto;
+    }
+
+    /**
      * 保存，id有值时更新，无值时新增
      */
     @PostMapping("/register")

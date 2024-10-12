@@ -270,4 +270,31 @@ public class MemberService {
         member.setPhone(mobile);
         return memberMapper.updateByPrimaryKeySelective(member);
     }
+
+    public Object updateUserLat(String token, MemberDto memberDto) {
+        LoginMemberDto loginMember = this.getLoginMember(token);
+        Member member = new Member();
+        member.setId(loginMember.getId());
+        member.setLat(memberDto.getLat());
+        member.setLng(memberDto.getLng());
+        return memberMapper.updateByPrimaryKeySelective(member);
+    }
+
+    public List<MemberDto> listH5(MemberDto memberDto) {
+        MemberExample memberExample = new MemberExample();
+        MemberExample.Criteria criteria = memberExample.createCriteria();
+        if (!StringUtils.isEmpty(memberDto.getMobile())) criteria.andMobileLike('%' + memberDto.getMobile() + '%');
+        if (!StringUtils.isEmpty(memberDto.getName())) criteria.andNameLike('%' + memberDto.getName() + '%');
+        List<Member> memberList = memberMapper.selectByExampleH5(memberExample);
+        List<MemberDto> memberDtoList = CopyUtil.copyList(memberList, MemberDto.class);
+        memberDtoList.forEach( member -> {
+            MemberSectionPass memberSectionPass = sectionPassMapper.selectByMemberId(member.getId());
+            if (memberSectionPass!=null){
+                member.setChoice(memberSectionPass.getSectionId());
+                Section section = sectionMapper.selectByPrimaryKey(memberSectionPass.getSectionId());
+                if (section!=null) member.setTitle(section.getTitle());
+            }
+        });
+        return memberDtoList;
+    }
 }

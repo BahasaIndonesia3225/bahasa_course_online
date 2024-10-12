@@ -42,6 +42,17 @@ public class MemberController {
     /**
      * 列表查询
      */
+    @PostMapping("/listH5")
+    public ResponseDto listH5(@RequestBody MemberDto memberDto ) {
+        ResponseDto responseDto = new ResponseDto();
+        List<MemberDto> list=memberService.listH5(memberDto);
+        responseDto.setContent(list);
+        return responseDto;
+    }
+
+    /**
+     * 列表查询
+     */
     @PostMapping("/list")
     public ResponseDto list(@RequestBody MemberPageDto pageDto) {
         ResponseDto responseDto = new ResponseDto();
