@@ -98,7 +98,7 @@ public class MemberController {
         }
         redisTemplate.opsForValue().set(key, loginMember.getToken(), 1, TimeUnit.HOURS);
         redisTemplate.opsForValue().set(loginMember.getToken(), JSON.toJSONString(loginMember), 1, TimeUnit.HOURS);
-        redisTemplate.opsForValue().set(memberDto.getPassword(), loginMember, 5, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(memberDto.getPassword(), t, 5, TimeUnit.MINUTES);
         responseDto.setContent(loginMember);
         return responseDto;
     }
