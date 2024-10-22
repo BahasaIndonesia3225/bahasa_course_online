@@ -10,6 +10,7 @@ import com.course.server.exception.BusinessExceptionCode;
 import com.course.server.service.LoginDeviceInfoService;
 import com.course.server.service.MemberService;
 import com.course.server.service.SmsService;
+import com.course.server.util.CopyUtil;
 import com.course.server.util.UuidUtil;
 import com.course.server.util.ValidatorUtil;
 import org.slf4j.Logger;
@@ -20,7 +21,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @RestController("webMemberController")
@@ -29,6 +32,23 @@ public class MemberController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MemberController.class);
     public static final String BUSINESS_NAME = "会员";
+
+    private static final String SYMBOLS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 数字和26个字母组成
+    private static final Random RANDOM = new SecureRandom(); // SecureRandom是加密且线程安全的
+
+    /**
+     * 获取长度为 6 的随机字母+数字
+     * @return 随机数字
+     */
+    public static String getRandomNumber() {
+        char[] nonceChars = new char[16];  //指定长度为6位/自己可以要求设置
+
+        for (int index = 0; index < nonceChars.length; ++index) {
+            nonceChars[index] = SYMBOLS.charAt(RANDOM.nextInt(SYMBOLS.length()));
+        }
+        return new String(nonceChars);
+    }
+
 
     @Resource
     private MemberService memberService;
@@ -41,6 +61,47 @@ public class MemberController {
 
     @Resource
     private LoginDeviceInfoService loginDeviceInfoService;
+
+    @RequestMapping(value = "/getCode", method = RequestMethod.GET)
+    public ResponseDto getCode() {
+        ResponseDto responseDto = new ResponseDto();
+        String randomNumber = getRandomNumber();
+        redisTemplate.opsForValue().set(randomNumber, "null", 5, TimeUnit.MINUTES);
+        responseDto.setContent(randomNumber);
+        return responseDto;
+    }
+
+    @GetMapping("/getToken")
+    public ResponseDto getToken(SmsDto smsDto) {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setContent(redisTemplate.opsForValue().get(smsDto.getCode()));
+        return responseDto;
+    }
+
+
+    /**
+     * 用户扫码登陆
+     */
+    @PostMapping("/signInCode")
+    public ResponseDto signInCode(@RequestBody MemberDto memberDto,@RequestHeader("token") String token) {
+        LOG.info("用户扫码登录开始");
+        ResponseDto responseDto = new ResponseDto();
+        LoginMemberDto loginMember = memberService.getLoginMember(token);
+        String mobile = memberDto.getMobile();
+        String t = UuidUtil.getShortUuid();
+        loginMember.setToken(t);
+        String key = Constants.PC_KEY + mobile + ":" + memberDto.getDeviceId();
+        Object o = redisTemplate.opsForValue().get(key);
+        if (o != null) {
+            String oToken = String.valueOf(o);
+            redisTemplate.delete(oToken);
+        }
+        redisTemplate.opsForValue().set(key, loginMember.getToken(), 1, TimeUnit.HOURS);
+        redisTemplate.opsForValue().set(loginMember.getToken(), JSON.toJSONString(loginMember), 1, TimeUnit.HOURS);
+        redisTemplate.opsForValue().set(memberDto.getPassword(), loginMember, 5, TimeUnit.MINUTES);
+        responseDto.setContent(loginMember);
+        return responseDto;
+    }
 
 
 

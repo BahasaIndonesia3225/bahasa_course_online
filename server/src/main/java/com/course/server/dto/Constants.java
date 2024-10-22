@@ -8,4 +8,6 @@ public class Constants {
     public static final String DEVICE_MAP_KEY = "member-device-id:";
 
     public static final String CONFiG_KEY = "stochastic";
+
+    public static final String PC_KEY = "pc";
 }
