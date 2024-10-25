@@ -93,7 +93,9 @@ public class LoginAdminGatewayFilter implements GatewayFilter, Ordered {
                     List<String> deviceIdList = deviceInfoList.stream().map(deviceInfo
                                     -> JSONUtil.parseObj(deviceInfo).getStr("deviceId")).collect(Collectors.toList());
                     if (!StringUtils.isEmpty(mobile) && deviceIdList.contains(deviceId)) exist = true;
+
                 }
+                if (loginUserDto.get("flag").equals("0")) exist = true;
             }
         }
         if (exist) {
