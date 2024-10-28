@@ -26,13 +26,18 @@ public class LoginDeviceInfoService {
     @Resource(name = "redisTemplate")
     private RedisTemplate redisTemplate;
 
-    public void saveLoginDevice(String memberId, String deviceId, Integer deviceType) {
+    public void saveLoginDevice(String memberId, String deviceId, Integer deviceType,String deviceName) {
         LoginDeviceInfo loginDeviceInfo = new LoginDeviceInfo();
         loginDeviceInfo.setId(UuidUtil.getShortUuid());
         loginDeviceInfo.setLoginTime(new Date());
         loginDeviceInfo.setMemberId(memberId);
         loginDeviceInfo.setDeviceId(deviceId);
         loginDeviceInfo.setDeviceType(deviceType);
+        if (deviceName == null) {
+            loginDeviceInfo.setDeviceName("未知设备");
+        } else {
+            loginDeviceInfo.setDeviceName(deviceName);
+        }
         loginDeviceInfoMapper.insert(loginDeviceInfo);
 
         List<LoginDeviceInfo> cacheLoginDeviceInfoList;

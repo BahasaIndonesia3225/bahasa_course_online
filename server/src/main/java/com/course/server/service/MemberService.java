@@ -201,6 +201,7 @@ public class MemberService {
                 String memberId = loginMemberDto.getId();
                 String deviceId = memberDto.getDeviceId();
                 Integer deviceType = memberDto.getDeviceType();
+                String deviceName = memberDto.getDeviceName();
                 loginMemberDto.setFlag("1");
                 loginMemberDto.setDeviceId(memberDto.getDeviceId());
                 if (MemberRoleEnum.ADMINISTRATOR.getCode().equals(member.getRole())){return loginMemberDto;}
@@ -212,7 +213,7 @@ public class MemberService {
                         loginMemberDto.setFlag("0");
                         return loginMemberDto;
                     }
-                    if(deviceType != null && deviceId != null) loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType);
+                    if(deviceType != null && deviceId != null) loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType,deviceName);
                 }
 
                 return loginMemberDto;

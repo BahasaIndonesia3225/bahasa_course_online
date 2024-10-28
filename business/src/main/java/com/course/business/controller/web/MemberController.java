@@ -66,7 +66,7 @@ public class MemberController {
     public ResponseDto getCode() {
         ResponseDto responseDto = new ResponseDto();
         String randomNumber = getRandomNumber();
-        redisTemplate.opsForValue().set(randomNumber, "null", 5, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(randomNumber, "未扫码", 5, TimeUnit.MINUTES);
         responseDto.setContent(randomNumber);
         return responseDto;
     }
@@ -74,7 +74,21 @@ public class MemberController {
     @GetMapping("/getToken")
     public ResponseDto getToken(SmsDto smsDto) {
         ResponseDto responseDto = new ResponseDto();
-        responseDto.setContent(redisTemplate.opsForValue().get(smsDto.getCode()));
+        Object o = redisTemplate.opsForValue().get(smsDto.getCode());
+        if (o == null) {
+            responseDto.setSuccess(false);
+            responseDto.setMessage("验证码已过期");
+            responseDto.setCode("00009");
+            return responseDto;
+        }
+        if (o.equals("未扫码")){
+            responseDto.setSuccess(false);
+            responseDto.setMessage("用户未扫码");
+            responseDto.setCode("00008");
+            return responseDto;
+        }
+        responseDto.setContent(memberService.getLoginMember((String) o));
+        redisTemplate.delete(smsDto.getCode());
         return responseDto;
     }
 
@@ -241,8 +255,8 @@ public class MemberController {
             redisTemplate.delete(oToken);
         }
         if (loginMemberDto.getFlag().equals("0")) {
-            redisTemplate.opsForValue().set(key, loginMemberDto.getToken(), 12, TimeUnit.HOURS);
-            redisTemplate.opsForValue().set(loginMemberDto.getToken(), JSON.toJSONString(loginMemberDto), 12, TimeUnit.HOURS);
+            redisTemplate.opsForValue().set(key, loginMemberDto.getToken(), 3, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(loginMemberDto.getToken(), JSON.toJSONString(loginMemberDto), 3, TimeUnit.MINUTES);
             responseDto.setContent(loginMemberDto);
             responseDto.setSuccess(false);
             responseDto.setCode("A0100");

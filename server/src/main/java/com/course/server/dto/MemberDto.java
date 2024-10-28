@@ -92,6 +92,8 @@ public class MemberDto {
 
     private Integer deviceType;
 
+    private String deviceName;
+
     private String choice;
 
     private String title;
@@ -248,6 +250,14 @@ public class MemberDto {
         this.phone = phone;
     }
 
+    public String getDeviceName() {
+		return deviceName;
+	}
+
+    public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
+	}
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("MemberDto{");
@@ -263,6 +273,7 @@ public class MemberDto {
         sb.append(", phone='").append(phone).append('\'');
         sb.append(", userType='").append(userType).append('\'');
         sb.append(", choice='").append(choice).append('\'');
+        sb.append(", deviceName='").append(deviceName).append('\'');
         sb.append('}');
         return sb.toString();
     }
