@@ -29,10 +29,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -281,11 +278,12 @@ public class MemberService {
         return memberMapper.updateByPrimaryKeySelective(member);
     }
 
-    public List<MemberDto> listH5(MemberDto memberDto) {
+    public List<MemberDto> listH5(MemberDto memberDto,String token) {
         MemberExample memberExample = new MemberExample();
         MemberExample.Criteria criteria = memberExample.createCriteria();
         if (!StringUtils.isEmpty(memberDto.getMobile())) criteria.andMobileLike('%' + memberDto.getMobile() + '%');
         if (!StringUtils.isEmpty(memberDto.getName())) criteria.andNameLike('%' + memberDto.getName() + '%');
+         memberExample.setId(this.getLoginMember(token).getId());
         List<Member> memberList = memberMapper.selectByExampleH5(memberExample);
         List<MemberDto> memberDtoList = CopyUtil.copyList(memberList, MemberDto.class);
         memberDtoList.forEach( member -> {

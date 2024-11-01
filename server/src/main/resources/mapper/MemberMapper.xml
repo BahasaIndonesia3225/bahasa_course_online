@@ -365,6 +365,10 @@
       </foreach>
     </if>
     and lng is not null and lat is not null
+
+    <if test="id != null">
+      and id != #{id}
+    </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
