@@ -225,7 +225,7 @@ public class MemberController {
         // 根据验证码token去获取缓存中的验证码，和用户输入的验证码是否一致
         String imageCode = (String) redisTemplate.opsForValue().get(memberDto.getImageCodeToken());
         LOG.info("从redis中获取到的验证码：{}", imageCode);
-        if (StringUtils.isEmpty(imageCode)) {
+        if (imageCode==null) {
             responseDto.setSuccess(false);
             responseDto.setMessage("验证码已过期");
             LOG.info("用户登录失败，验证码已过期");
