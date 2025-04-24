@@ -37,10 +37,7 @@ public class LoginAdminGatewayFilter implements GatewayFilter, Ordered {
         if (path.contains("/system/admin/user/login")
                 || path.contains("/system/admin/user/logout")
                 || path.contains("/system/admin/kaptcha")
-                || path.contains("/web/member/signIn")
-                || path.contains("/web/member/getCode")
-                || path.contains("/web/member/getToken")
-        ) {
+                || path.contains("/web/member/signIn")) {
             LOG.info("不需要控台登录验证：{}", path);
             return chain.filter(exchange);
         }
@@ -93,9 +90,7 @@ public class LoginAdminGatewayFilter implements GatewayFilter, Ordered {
                     List<String> deviceIdList = deviceInfoList.stream().map(deviceInfo
                                     -> JSONUtil.parseObj(deviceInfo).getStr("deviceId")).collect(Collectors.toList());
                     if (!StringUtils.isEmpty(mobile) && deviceIdList.contains(deviceId)) exist = true;
-
                 }
-                if (loginUserDto.get("flag").equals("0")) exist = true;
             }
         }
         if (exist) {

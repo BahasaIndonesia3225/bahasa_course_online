@@ -6,11 +6,13 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.course.server.domain.LoginDeviceInfo;
 import com.course.server.domain.Member;
+import com.course.server.domain.WatchHistory;
 import com.course.server.dto.MemberDto;
 import com.course.server.dto.MemberPageDto;
 import com.course.server.dto.ResponseDto;
 import com.course.server.service.LoginDeviceInfoService;
 import com.course.server.service.MemberService;
+import com.course.server.service.WatchHistoryService;
 import com.course.server.util.ValidatorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,20 @@ public class MemberController {
     @Resource
     private LoginDeviceInfoService loginDeviceInfoService;
 
+    @Resource
+    private WatchHistoryService watchHistoryService;
+
+
+    /**
+     * 根据用户ID查询观看记录
+     */
+    @GetMapping("/watchHistory")
+    public ResponseDto watchHistory(String memberId) {
+        ResponseDto responseDto = new ResponseDto();
+        List<WatchHistory> memberList = watchHistoryService.selectByMemberId(memberId);
+        responseDto.setContent(memberList);
+        return responseDto;
+    }
 
     /**
      * 列表查询

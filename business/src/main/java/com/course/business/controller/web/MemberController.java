@@ -3,6 +3,7 @@ package com.course.business.controller.web;
 import com.alibaba.fastjson.JSON;
 import com.course.server.domain.LoginDeviceInfo;
 import com.course.server.domain.Member;
+import com.course.server.domain.WatchHistory;
 import com.course.server.dto.*;
 import com.course.server.enums.SmsUseEnum;
 import com.course.server.exception.BusinessException;
@@ -10,7 +11,7 @@ import com.course.server.exception.BusinessExceptionCode;
 import com.course.server.service.LoginDeviceInfoService;
 import com.course.server.service.MemberService;
 import com.course.server.service.SmsService;
-import com.course.server.util.CopyUtil;
+import com.course.server.service.WatchHistoryService;
 import com.course.server.util.UuidUtil;
 import com.course.server.util.ValidatorUtil;
 import org.slf4j.Logger;
@@ -21,7 +22,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -32,23 +36,6 @@ public class MemberController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MemberController.class);
     public static final String BUSINESS_NAME = "会员";
-
-    private static final String SYMBOLS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 数字和26个字母组成
-    private static final Random RANDOM = new SecureRandom(); // SecureRandom是加密且线程安全的
-
-    /**
-     * 获取长度为 6 的随机字母+数字
-     * @return 随机数字
-     */
-    public static String getRandomNumber() {
-        char[] nonceChars = new char[16];  //指定长度为6位/自己可以要求设置
-
-        for (int index = 0; index < nonceChars.length; ++index) {
-            nonceChars[index] = SYMBOLS.charAt(RANDOM.nextInt(SYMBOLS.length()));
-        }
-        return new String(nonceChars);
-    }
-
 
     @Resource
     private MemberService memberService;
@@ -62,16 +49,32 @@ public class MemberController {
     @Resource
     private LoginDeviceInfoService loginDeviceInfoService;
 
+    @Resource
+    private WatchHistoryService watchHistoryService;
 
     /**
-     * 列表查询
+     * 根据用户ID查询观看记录
      */
-    @PostMapping("/listH5")
-    public ResponseDto listH5(@RequestBody MemberDto memberDto ,@RequestHeader("token") String token) {
+    @GetMapping("/watchHistory")
+    public ResponseDto watchHistory(@RequestHeader("token") String token) {
         ResponseDto responseDto = new ResponseDto();
-        List<MemberDto> list=memberService.listH5(memberDto,token);
-        responseDto.setContent(list);
+        List<WatchHistory> memberList = watchHistoryService.selectByMemberId( memberService.getLoginMember(token).getId());
+        responseDto.setContent(memberList);
         return responseDto;
+    }
+    private static final String SYMBOLS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 数字和26个字母组成
+    private static final Random RANDOM = new SecureRandom(); // SecureRandom是加密且线程安全的
+    /**
+     * 获取长度为 6 的随机字母+数字
+     * @return 随机数字
+     */
+    public static String getRandomNumber() {
+        char[] nonceChars = new char[16];  //指定长度为6位/自己可以要求设置
+
+        for (int index = 0; index < nonceChars.length; ++index) {
+            nonceChars[index] = SYMBOLS.charAt(RANDOM.nextInt(SYMBOLS.length()));
+        }
+        return new String(nonceChars);
     }
 
 
@@ -105,6 +108,17 @@ public class MemberController {
         return responseDto;
     }
 
+    /**
+     * 列表查询
+     */
+    @PostMapping("/listH5")
+    public ResponseDto listH5(@RequestBody MemberDto memberDto ,@RequestHeader("token") String token) {
+        ResponseDto responseDto = new ResponseDto();
+        List<MemberDto> list=memberService.listH5(memberDto,token);
+        responseDto.setContent(list);
+        return responseDto;
+    }
+
 
     /**
      * 用户扫码登陆
@@ -130,7 +144,20 @@ public class MemberController {
         return responseDto;
     }
 
+    /**
+     * 新增观看记录
+     */
+    @PostMapping("/watchHistory")
+    public ResponseDto watchHistory(@RequestHeader("token") String token,@RequestBody WatchHistory watchHistory){
+        ResponseDto responseDto = new ResponseDto();
+        LoginMemberDto loginMember = memberService.getLoginMember(token);
+        watchHistory.setMemberId(loginMember.getId());
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        watchHistory.setCreatorTime(sdf3.format(new Date()));
+        watchHistoryService.insert(watchHistory);
+        return responseDto;
 
+    }
 
     /**
      *  用户绑定手机号码发送短信
@@ -142,6 +169,22 @@ public class MemberController {
 
         ResponseDto responseDto = new ResponseDto();
         responseDto.setContent(smsService.sendCode(smsDto));
+        // TODO 调第三方短信接口发送短信
+        return responseDto;
+    }
+
+    /**
+     *  用户修改经纬度
+     * @param memberDto
+     * @return
+     */
+    @RequestMapping(value = "/updateUserLat", method = RequestMethod.POST)
+    public ResponseDto updateUserLat(@RequestBody MemberDto memberDto,@RequestHeader("token") String token) {
+
+        ResponseDto responseDto = new ResponseDto();
+
+        //修改手机号码
+        responseDto.setContent(memberService.updateUserLat(token,memberDto));
         // TODO 调第三方短信接口发送短信
         return responseDto;
     }
@@ -164,22 +207,6 @@ public class MemberController {
         }
         //修改手机号码
         responseDto.setContent(memberService.updateMobile(token,smsDto.getMobile()));
-        // TODO 调第三方短信接口发送短信
-        return responseDto;
-    }
-
-    /**
-     *  用户修改经纬度
-     * @param memberDto
-     * @return
-     */
-    @RequestMapping(value = "/updateUserLat", method = RequestMethod.POST)
-    public ResponseDto updateUserLat(@RequestBody MemberDto memberDto,@RequestHeader("token") String token) {
-
-        ResponseDto responseDto = new ResponseDto();
-
-        //修改手机号码
-        responseDto.setContent(memberService.updateUserLat(token,memberDto));
         // TODO 调第三方短信接口发送短信
         return responseDto;
     }
@@ -217,7 +244,7 @@ public class MemberController {
      * 登录
      */
     @PostMapping("/login")
-    public ResponseDto login(@RequestBody MemberDto memberDto) {
+    public ResponseDto login(HttpServletRequest request,@RequestBody MemberDto memberDto) {
         LOG.info("用户登录开始");
         memberDto.setPassword(DigestUtils.md5DigestAsHex(memberDto.getPassword().getBytes()));
         ResponseDto responseDto = new ResponseDto();
@@ -225,7 +252,7 @@ public class MemberController {
         // 根据验证码token去获取缓存中的验证码，和用户输入的验证码是否一致
         String imageCode = (String) redisTemplate.opsForValue().get(memberDto.getImageCodeToken());
         LOG.info("从redis中获取到的验证码：{}", imageCode);
-        if (imageCode==null) {
+        if (StringUtils.isEmpty(imageCode)) {
             responseDto.setSuccess(false);
             responseDto.setMessage("验证码已过期");
             LOG.info("用户登录失败，验证码已过期");
@@ -240,7 +267,8 @@ public class MemberController {
             // 验证通过后，移除验证码
             redisTemplate.delete(memberDto.getImageCodeToken());
         }
-
+        String ip = request.getRemoteAddr();
+        memberDto.setIp(ip);
         LoginMemberDto loginMemberDto = memberService.login(memberDto);
         String token = UuidUtil.getShortUuid();
         loginMemberDto.setToken(token);
@@ -253,7 +281,9 @@ public class MemberController {
      * 登录
      */
     @PostMapping("/signIn")
-    public ResponseDto signIn(@RequestBody MemberDto memberDto) {
+    public ResponseDto signIn(HttpServletRequest request, @RequestBody MemberDto memberDto) {
+        String ip = request.getRemoteAddr();
+        memberDto.setIp(ip);
         LOG.info("用户登录开始");
         memberDto.setPassword(DigestUtils.md5DigestAsHex(memberDto.getPassword().getBytes()));
         ResponseDto responseDto = new ResponseDto();
@@ -268,8 +298,8 @@ public class MemberController {
             redisTemplate.delete(oToken);
         }
         if (loginMemberDto.getFlag().equals("0")) {
-            redisTemplate.opsForValue().set(key, loginMemberDto.getToken(), 3, TimeUnit.MINUTES);
-            redisTemplate.opsForValue().set(loginMemberDto.getToken(), JSON.toJSONString(loginMemberDto), 3, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(key, loginMemberDto.getToken(), 12, TimeUnit.HOURS);
+            redisTemplate.opsForValue().set(loginMemberDto.getToken(), JSON.toJSONString(loginMemberDto), 12, TimeUnit.HOURS);
             responseDto.setContent(loginMemberDto);
             responseDto.setSuccess(false);
             responseDto.setCode("A0100");
@@ -280,6 +310,8 @@ public class MemberController {
         responseDto.setContent(loginMemberDto);
         return responseDto;
     }
+
+
 
     /**
      * 退出登录

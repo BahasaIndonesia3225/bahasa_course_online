@@ -13,7 +13,10 @@
     <result column="role" jdbcType="INTEGER" property="role" />
     <result column="do_question" jdbcType="INTEGER" property="doQuestion" />
     <result column="device_limit_num" jdbcType="INTEGER" property="deviceLimitNum" />
-    <result column="user_type"  jdbcType="INTEGER" property="userType" />
+    <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="license_type" jdbcType="INTEGER" property="licenseType" />
+    <result column="login_type" jdbcType="INTEGER" property="loginType" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
     <result column="lng" jdbcType="VARCHAR" property="lng" />
     <result column="lat" jdbcType="VARCHAR" property="lat" />
   </resultMap>
@@ -77,7 +80,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, mobile, `password`, `name`, photo, register_time, pay_status, `role`, do_question, phone,
-    device_limit_num, `user_type`,lat,lng
+    device_limit_num, user_type, license_type,login_type,ip,lat,lng
   </sql>
   <select id="selectByExample" parameterType="com.course.server.domain.MemberExample" resultMap="BaseResultMap">
     select
@@ -113,11 +116,11 @@
     insert into member (id, mobile, `password`, 
       `name`, photo, register_time, 
       pay_status, `role`, do_question, 
-      device_limit_num,phone,user_type)
+      device_limit_num,phone,user_type,license_type,login_type)
     values (#{id,jdbcType=CHAR}, #{mobile,jdbcType=VARCHAR}, #{password,jdbcType=CHAR}, 
       #{name,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, #{registerTime,jdbcType=TIMESTAMP}, 
       #{payStatus,jdbcType=INTEGER}, #{role,jdbcType=INTEGER}, #{doQuestion,jdbcType=INTEGER}, 
-      #{deviceLimitNum,jdbcType=INTEGER},#{phone,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER})
+      #{deviceLimitNum,jdbcType=INTEGER},#{phone,jdbcType=VARCHAR}, #{userType,jdbcType=INTEGER},#{licenseType,jdbcType=INTEGER},#{loginType,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.course.server.domain.Member">
     insert into member
@@ -158,6 +161,12 @@
       <if test="userType != null">
         user_type,
       </if>
+        <if test="licenseType != null">
+          license_type,
+        </if>
+        <if test="loginType != null">
+          login_type,
+        </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -196,6 +205,12 @@
       <if test="userType != null">
         #{userType,jdbcType=INTEGER},
       </if>
+      <if test="licenseType != null">
+        #{licenseType,jdbcType=INTEGER},
+      </if>
+      <if test="loginType != null">
+        #{loginType,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.course.server.domain.MemberExample" resultType="java.lang.Long">
@@ -207,128 +222,6 @@
   <select id="findByPhone" resultType="com.course.server.domain.Member">
     select * from member where phone = #{phone}
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
-    update member
-    <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=CHAR},
-      </if>
-      <if test="record.mobile != null">
-        mobile = #{record.mobile,jdbcType=VARCHAR},
-      </if>
-      <if test="record.phone != null">
-        phone = #{record.phone,jdbcType=VARCHAR},
-      </if>
-      <if test="record.userType != null">
-        user_type = #{record.userType,jdbcType=INTEGER},
-      </if>
-      <if test="record.password != null">
-        `password` = #{record.password,jdbcType=CHAR},
-      </if>
-      <if test="record.name != null">
-        `name` = #{record.name,jdbcType=VARCHAR},
-      </if>
-      <if test="record.photo != null">
-        photo = #{record.photo,jdbcType=VARCHAR},
-      </if>
-      <if test="record.registerTime != null">
-        register_time = #{record.registerTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.payStatus != null">
-        pay_status = #{record.payStatus,jdbcType=INTEGER},
-      </if>
-      <if test="record.role != null">
-        `role` = #{record.role,jdbcType=INTEGER},
-      </if>
-      <if test="record.doQuestion != null">
-        do_question = #{record.doQuestion,jdbcType=INTEGER},
-      </if>
-      <if test="record.deviceLimitNum != null">
-        device_limit_num = #{record.deviceLimitNum,jdbcType=INTEGER},
-      </if>
-    </set>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    update member
-    set id = #{record.id,jdbcType=CHAR},
-      mobile = #{record.mobile,jdbcType=VARCHAR},
-      `password` = #{record.password,jdbcType=CHAR},
-      `name` = #{record.name,jdbcType=VARCHAR},
-    phone = #{record.phone,jdbcType=CHAR},
-    user_type = #{record.userType,jdbcType=INTEGER},
-      photo = #{record.photo,jdbcType=VARCHAR},
-      register_time = #{record.registerTime,jdbcType=TIMESTAMP},
-      pay_status = #{record.payStatus,jdbcType=INTEGER},
-      `role` = #{record.role,jdbcType=INTEGER},
-      do_question = #{record.doQuestion,jdbcType=INTEGER},
-      device_limit_num = #{record.deviceLimitNum,jdbcType=INTEGER}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.course.server.domain.Member">
-    update member
-    <set>
-      <if test="mobile != null">
-        mobile = #{mobile,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        `password` = #{password,jdbcType=CHAR},
-      </if>
-      <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="photo != null">
-        photo = #{photo,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null">
-        phone = #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="userType != null">
-        user_type = #{userType,jdbcType=INTEGER},
-      </if>
-      <if test="registerTime != null">
-        register_time = #{registerTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="payStatus != null">
-        pay_status = #{payStatus,jdbcType=INTEGER},
-      </if>
-      <if test="role != null">
-        `role` = #{role,jdbcType=INTEGER},
-      </if>
-      <if test="doQuestion != null">
-        do_question = #{doQuestion,jdbcType=INTEGER},
-      </if>
-      <if test="deviceLimitNum != null">
-        device_limit_num = #{deviceLimitNum,jdbcType=INTEGER},
-      </if>
-      <if test="lat != null">
-        lat = #{lat,jdbcType=VARCHAR},
-      </if>
-      <if test="lng != null">
-        lng = #{lng,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=CHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.course.server.domain.Member">
-    update member
-    set mobile = #{mobile,jdbcType=VARCHAR},
-      `password` = #{password,jdbcType=CHAR},
-      `name` = #{name,jdbcType=VARCHAR},
-        phone = #{phone,jdbcType=VARCHAR},
-        user_type = #{userType,jdbcType=INTEGER},
-      photo = #{photo,jdbcType=VARCHAR},
-      pay_status = #{payStatus,jdbcType=INTEGER},
-      `role` = #{role,jdbcType=INTEGER},
-      do_question = #{doQuestion,jdbcType=INTEGER},
-      device_limit_num = #{deviceLimitNum,jdbcType=INTEGER}
-    where id = #{id,jdbcType=CHAR}
-  </update>
-
   <select id="selectByExampleH5" parameterType="com.course.server.domain.MemberExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -373,4 +266,151 @@
       order by ${orderByClause}
     </if>
   </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update member
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=CHAR},
+      </if>
+      <if test="record.mobile != null">
+        mobile = #{record.mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null">
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userType != null">
+        user_type = #{record.userType,jdbcType=INTEGER},
+      </if>
+      <if test="record.password != null">
+        `password` = #{record.password,jdbcType=CHAR},
+      </if>
+      <if test="record.name != null">
+        `name` = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.photo != null">
+        photo = #{record.photo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.registerTime != null">
+        register_time = #{record.registerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.payStatus != null">
+        pay_status = #{record.payStatus,jdbcType=INTEGER},
+      </if>
+      <if test="record.role != null">
+        `role` = #{record.role,jdbcType=INTEGER},
+      </if>
+      <if test="record.doQuestion != null">
+        do_question = #{record.doQuestion,jdbcType=INTEGER},
+      </if>
+      <if test="record.deviceLimitNum != null">
+        device_limit_num = #{record.deviceLimitNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.licenseType != null">
+        license_type = #{record.licenseType,jdbcType=INTEGER},
+      </if>
+      <if test="record.loginType != null">
+        login_type = #{record.loginType,jdbcType=INTEGER},
+      </if>
+      <if test="record.ip != null">
+        ip = #{record.ip,jdbcType=VARCHAR},
+      </if>
+
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update member
+    set id = #{record.id,jdbcType=CHAR},
+      mobile = #{record.mobile,jdbcType=VARCHAR},
+      `password` = #{record.password,jdbcType=CHAR},
+      `name` = #{record.name,jdbcType=VARCHAR},
+    phone = #{record.phone,jdbcType=CHAR},
+    user_type = #{record.userType,jdbcType=INTEGER},
+      photo = #{record.photo,jdbcType=VARCHAR},
+      register_time = #{record.registerTime,jdbcType=TIMESTAMP},
+      pay_status = #{record.payStatus,jdbcType=INTEGER},
+      `role` = #{record.role,jdbcType=INTEGER},
+      do_question = #{record.doQuestion,jdbcType=INTEGER},
+    login_type = #{record.loginType,jdbcType=INTEGER},
+    license_type = #{record.licenseType,jdbcType=INTEGER},
+      device_limit_num = #{record.deviceLimitNum,jdbcType=INTEGER},
+      ip = #{record.ip,jdbcType=VARCHAR}
+
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.course.server.domain.Member">
+    update member
+    <set>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        `password` = #{password,jdbcType=CHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="photo != null">
+        photo = #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        user_type = #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="registerTime != null">
+        register_time = #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payStatus != null">
+        pay_status = #{payStatus,jdbcType=INTEGER},
+      </if>
+      <if test="role != null">
+        `role` = #{role,jdbcType=INTEGER},
+      </if>
+      <if test="doQuestion != null">
+        do_question = #{doQuestion,jdbcType=INTEGER},
+      </if>
+      <if test="deviceLimitNum != null">
+        device_limit_num = #{deviceLimitNum,jdbcType=INTEGER},
+      </if>
+      <if test="licenseType != null">
+        license_type = #{licenseType,jdbcType=INTEGER},
+      </if>
+      <if test="loginType != null">
+        login_type = #{loginType,jdbcType=INTEGER},
+      </if>
+      <if test="ip != null">
+        ip=#{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        lat = #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="lng != null">
+        lng = #{lng,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.course.server.domain.Member">
+    update member
+    set mobile = #{mobile,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=CHAR},
+      `name` = #{name,jdbcType=VARCHAR},
+        phone = #{phone,jdbcType=VARCHAR},
+        user_type = #{userType,jdbcType=INTEGER},
+      photo = #{photo,jdbcType=VARCHAR},
+      pay_status = #{payStatus,jdbcType=INTEGER},
+      `role` = #{role,jdbcType=INTEGER},
+      do_question = #{doQuestion,jdbcType=INTEGER},
+        login_type = #{loginType,jdbcType=INTEGER},
+        license_type = #{licenseType,jdbcType=INTEGER},
+      device_limit_num = #{deviceLimitNum,jdbcType=INTEGER},
+      ip=#{ip,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
 </mapper>

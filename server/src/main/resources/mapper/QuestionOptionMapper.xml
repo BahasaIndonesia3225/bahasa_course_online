@@ -68,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, question_id, content, answer, create_at, updated_at
+    distinct id, question_id, content, answer, create_at, updated_at
   </sql>
   <select id="selectByExample" parameterType="com.course.server.domain.QuestionOptionExample" resultMap="BaseResultMap">
     select

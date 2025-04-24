@@ -47,9 +47,22 @@ public class MemberDto {
 
     private String phone;
 
+    private String ip;
+
     private String lng;
 
     private String lat;
+
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
 
     public String getLng() {
         return lng;
@@ -65,6 +78,15 @@ public class MemberDto {
 
     public void setLat(String lat) {
         this.lat = lat;
+    }
+
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     /**
@@ -92,18 +114,27 @@ public class MemberDto {
 
     private Integer deviceType;
 
-    private String deviceName;
-
     private String choice;
 
-    private String title;
 
-    public String getTitle() {
-        return title;
+    private Integer licenseType;
+
+    private Integer loginType;
+
+    public Integer getLoginType() {
+        return loginType;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setLoginType(Integer loginType) {
+        this.loginType = loginType;
+    }
+
+    public Integer getLicenseType() {
+        return licenseType;
+    }
+
+    public void setLicenseType(Integer licenseType) {
+        this.licenseType = licenseType;
     }
 
     public String getChoice() {
@@ -250,14 +281,6 @@ public class MemberDto {
         this.phone = phone;
     }
 
-    public String getDeviceName() {
-		return deviceName;
-	}
-
-    public void setDeviceName(String deviceName) {
-		this.deviceName = deviceName;
-	}
-
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("MemberDto{");
@@ -273,7 +296,6 @@ public class MemberDto {
         sb.append(", phone='").append(phone).append('\'');
         sb.append(", userType='").append(userType).append('\'');
         sb.append(", choice='").append(choice).append('\'');
-        sb.append(", deviceName='").append(deviceName).append('\'');
         sb.append('}');
         return sb.toString();
     }

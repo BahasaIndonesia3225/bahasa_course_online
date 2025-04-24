@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.course.server.mapper.WatchHistoryMapper">
+    <resultMap id="BaseResultMap" type="com.course.server.domain.WatchHistory">
+        <id column="id" jdbcType="CHAR" property="id" />
+        <result column="member_id" jdbcType="CHAR" property="memberId" />
+        <result column="course_name" jdbcType="VARCHAR" property="courseName" />
+        <result column="course_id" jdbcType="CHAR" property="courseId" />
+        <result column="time" jdbcType="INTEGER" property="time" />
+        <result column="creator_time" jdbcType="TIMESTAMP" property="creatorTime" />
+        <result column="course_vod" jdbcType="VARCHAR" property="courseVod" />
+    </resultMap>
+    <insert id="insert">
+        insert into watch_history (id, member_id, course_name, course_id, time, creator_time, course_vod)
+        values (#{id,jdbcType=CHAR}, #{memberId,jdbcType=CHAR}, #{courseName,jdbcType=VARCHAR}, #{courseId,jdbcType=CHAR}, #{time,jdbcType=INTEGER}, #{creatorTime,jdbcType=TIMESTAMP}, #{courseVod,jdbcType=VARCHAR})
+    </insert>
+    <delete id="deleteByMemberId">
+        DELETE FROM watch_history
+        WHERE id IN (
+            SELECT id FROM (
+                               SELECT id
+                               FROM watch_history
+                               where member_id = #{memberId,jdbcType=CHAR}
+                               ORDER BY creator_time DESC, id DESC
+                                   LIMIT 100, 100000
+                           ) a
+        )
+    </delete>
+    <select id="selectByMemberId"  resultMap="BaseResultMap">
+        select
+        *
+        from watch_history
+        where member_id = #{memberId,jdbcType=CHAR}
+       order by creator_time desc
+    </select>
+    <select id="countByMemberId" resultType="java.lang.Integer">
+        select count(1)
+        from watch_history
+        where member_id = #{memberId,jdbcType=CHAR}
+    </select>
+
+
+</mapper>

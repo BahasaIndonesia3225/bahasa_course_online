@@ -2,7 +2,6 @@ package com.course.server.domain;
 
 import java.util.Date;
 
-
 public class Member {
     private String id;
 
@@ -28,6 +27,12 @@ public class Member {
 
     private Integer userType;
 
+    private Integer licenseType;
+
+    private Integer loginType;
+
+    private String ip;
+
     private String lng;
 
     private String lat;
@@ -48,6 +53,30 @@ public class Member {
         this.lat = lat;
     }
 
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public Integer getLicenseType() {
+        return licenseType;
+    }
+
+    public void setLicenseType(Integer licenseType) {
+        this.licenseType = licenseType;
+    }
+
+    public Integer getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(Integer loginType) {
+        this.loginType = loginType;
+    }
 
     public Integer getUserType() {
         return userType;

@@ -7,7 +7,6 @@
     <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
     <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
     <result column="device_type" jdbcType="INTEGER" property="deviceType" />
-    <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, member_id, device_id, login_time, device_type, device_name
+    id, member_id, device_id, login_time, device_type
   </sql>
   <select id="selectByExample" parameterType="com.course.server.domain.LoginDeviceInfoExample" resultMap="BaseResultMap">
     select
@@ -102,9 +101,9 @@
   </delete>
   <insert id="insert" parameterType="com.course.server.domain.LoginDeviceInfo">
     insert into login_device_info (id, member_id, device_id, 
-      login_time, device_type,device_name)
+      login_time, device_type)
     values (#{id,jdbcType=VARCHAR}, #{memberId,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
-      #{loginTime,jdbcType=TIMESTAMP}, #{deviceType,jdbcType=INTEGER}, #{deviceName,jdbcType=VARCHAR})
+      #{loginTime,jdbcType=TIMESTAMP}, #{deviceType,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.course.server.domain.LoginDeviceInfo">
     insert into login_device_info

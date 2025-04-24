@@ -158,10 +158,10 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-    <select id="selectByMemberId"  parameterType="java.lang.String" resultMap="BaseResultMap">
-      select *, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS rownum from member_section_pass
-      where member_id = #{memberId} ORDER BY  rownum desc  limit 1
-    </select>
+  <select id="selectByMemberId"  parameterType="java.lang.String" resultMap="BaseResultMap">
+    select *, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS rownum from member_section_pass
+    where member_id = #{memberId} ORDER BY  rownum desc  limit 1
+  </select>
     <update id="updateByExampleSelective" parameterType="map">
     update member_section_pass
     <set>
