@@ -4,7 +4,7 @@ import com.course.server.domain.Notice;
 
 public interface NoticeMapper {
 
-    Notice selectNotice();
+    Notice selectNotice(Long id);
 
     int updateNotice(Notice record);
 

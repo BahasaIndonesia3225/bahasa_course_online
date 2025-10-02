@@ -297,4 +297,18 @@ public class MemberService {
         });
         return memberDtoList;
     }
+
+    public void updateMemberUnState(String memberId) {
+        Member member = new Member();
+        member.setId(memberId);
+        member.setState("1");
+        memberMapper.updateByPrimaryKeySelective(member);
+    }
+
+    public void updateMemberState(String id) {
+        Member member = new Member();
+        member.setId(id);
+        member.setState("0");
+        memberMapper.updateByPrimaryKeySelective(member);
+    }
 }

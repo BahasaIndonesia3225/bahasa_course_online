@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.course.server.mapper.NoticeMapper">
-  <resultMap id="BaseResultMap" type="com.course.server.domain.Notice">
-    <id column="id" jdbcType="CHAR" property="id" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <resultMap id="BaseResultMap" type="com.course.server.domain.Notice">
+        <id column="id" jdbcType="CHAR" property="id"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
 
-  </resultMap>
-  <update id="updateNotice">
-    update notice
-    set remark = #{remark,jdbcType=VARCHAR}
-    where id = 1
-  </update>
-  <select id="selectNotice" resultType="com.course.server.domain.Notice">
-    select
-    *
-    from notice
-    where id=1
-
-  </select>
+    </resultMap>
+    <update id="updateNotice">update notice set remark = #{remark,jdbcType=VARCHAR} where id = #{id,jdbcType=CHAR}
+    </update>
+    <select id="selectNotice" parameterType="Long" resultType="com.course.server.domain.Notice">select * from notice
+        where id=#{id}
+    </select>
 
 
 </mapper>

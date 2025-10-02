@@ -23,14 +23,18 @@ public class NoticeController {
     @Resource
     private NoticeService noticeService;
 
-    /**
-     * 查询公告
-     */
-    @PostMapping("/all")
+    @PostMapping({"/all"})
     public ResponseDto all() {
         ResponseDto responseDto = new ResponseDto();
+        responseDto.setContent(this.noticeService.selectNotice(1L));
+        return responseDto;
+    }
 
-        responseDto.setContent(noticeService.selectNotice());
+    @PostMapping({"/peacock"})
+    public ResponseDto peacock() {
+        ResponseDto responseDto = new ResponseDto();
+        Notice notice = this.noticeService.selectNotice(2L);
+        responseDto.setContent(notice);
         return responseDto;
     }
 

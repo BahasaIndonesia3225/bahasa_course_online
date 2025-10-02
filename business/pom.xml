@@ -41,6 +41,11 @@
             <groupId>cn.course</groupId>
             <artifactId>server</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>sensitive-word</artifactId>
+            <version>0.26.0</version>
+        </dependency>
     </dependencies>
 
     <build>

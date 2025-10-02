@@ -48,4 +48,19 @@ public class NoticeApiController {
     }
 
 
+    @GetMapping({"/peacock"})
+    public ResponseDto peacock() {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setContent(noticeService.selectNotice(2L));
+        return responseDto;
+    }
+
+    @PostMapping({"/savePeacock"})
+    public ResponseDto savePeacock(@RequestBody Notice notice) {
+        ResponseDto responseDto = new ResponseDto();
+        notice.setId("2");
+        responseDto.setContent(noticeService.updateNotice(notice));
+        return responseDto;
+    }
+
 }

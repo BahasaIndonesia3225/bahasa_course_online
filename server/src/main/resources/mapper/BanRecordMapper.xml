@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.course.server.mapper.BanRecordMapper">
+    <resultMap id="BaseResultMap" type="com.course.server.domain.BanRecord">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <id column="member_id" jdbcType="VARCHAR" property="memberId" />
+
+        <result column="member_id" jdbcType="VARCHAR" property="memberId" />
+        <result column="reason" jdbcType="VARCHAR" property="reason" />
+        <result column="ban_time" jdbcType="TIMESTAMP" property="banTime" />
+    </resultMap>
+    <insert id="insertSelective" parameterType="com.course.server.domain.Forum" >
+        insert into ban_record (member_id, reason, ban_time)
+        values (#{memberId,jdbcType=VARCHAR}, #{reason,jdbcType=VARCHAR}, #{banTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+    <select id="selectBanRecord" resultMap="BaseResultMap">
+        select b.*, m.name memberName,m.state from ban_record b left join member m on b.member_id = m.id COLLATE utf8mb4_unicode_ci
+            limit #{page},#{size}
+    </select>
+    <select id="selectBanRecordCount" resultType="java.lang.Long">
+        select count(*) from ban_record
+    </select>
+
+</mapper>

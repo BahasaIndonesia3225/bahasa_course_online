@@ -80,7 +80,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, mobile, `password`, `name`, photo, register_time, pay_status, `role`, do_question, phone,
-    device_limit_num, user_type, license_type,login_type,ip,lat,lng
+    device_limit_num, user_type, license_type,login_type,ip,lat,lng,`state`
   </sql>
   <select id="selectByExample" parameterType="com.course.server.domain.MemberExample" resultMap="BaseResultMap">
     select
@@ -314,6 +314,15 @@
       <if test="record.ip != null">
         ip = #{record.ip,jdbcType=VARCHAR},
       </if>
+      <if test="record.lng != null">
+        lng = #{record.lng,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lat != null">
+        lat = #{record.lat,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
 
     </set>
     <if test="_parameter != null">
@@ -350,6 +359,9 @@
       </if>
       <if test="password != null">
         `password` = #{password,jdbcType=CHAR},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=CHAR},
       </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},

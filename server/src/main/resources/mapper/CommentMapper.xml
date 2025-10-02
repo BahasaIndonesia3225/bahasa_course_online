@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.course.server.mapper.CommentMapper">
+    <resultMap id="BaseResultMap" type="com.course.server.domain.Comment">
+       <id column="id" jdbcType="BIGINT" property="id" />
+       <id column="member_id" jdbcType="VARCHAR" property="memberId" />
+        <result column="forum_id" jdbcType="VARCHAR" property="forumId" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="ip" jdbcType="VARCHAR" property="ip" />
+        <result column="state" jdbcType="VARCHAR" property="state" />
+        <result column="create" jdbcType="TIMESTAMP" property="create" />
+    </resultMap>
+    <insert id="insert"  parameterType="com.course.server.domain.Comment" useGeneratedKeys="true" keyProperty="id">
+        insert into comment ( member_id, forum_id, content, ip, state, `create`)
+        values ( #{memberId,jdbcType=VARCHAR}, #{forumId,jdbcType=BIGINT},
+                #{content,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR},
+                #{state,jdbcType=VARCHAR}, #{create,jdbcType=VARCHAR})
+    </insert>
+    <delete id="delete">
+        delete from comment where id = #{id}
+    </delete>
+    <delete id="deleteComment">
+        delete from comment where forum_id = #{id}
+    </delete>
+    <select id="selectComments" parameterType="com.course.server.domain.Comment"  resultType="com.course.server.domain.Comment">
+        select c.* , m.name memberName from comment c left join member m on c.member_id COLLATE utf8mb4_unicode_ci = m.id
+        <where>
+            <if test="forumId != null">
+                and c.forum_id = #{forumId}
+            </if>
+            <if test="memberId != null">
+                and c.member_id = #{memberId}
+            </if>
+            <if test="state != null and state != ''" >
+                and c.state = #{state}
+            </if>
+        </where>
+        order by c.id desc
+        limit #{page},#{size}
+    </select>
+    <select id="selectCommentCount" parameterType="com.course.server.domain.Comment" resultType="java.lang.Long">
+        select count(*) from comment
+        <where>
+            <if test="forumId != null">
+                and forum_id = #{forumId}
+            </if>
+            <if test="memberId != null">
+                and member_id = #{memberId}
+            </if>
+            <if test="state != null and state != ''">
+                and state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="com.course.server.domain.Comment">
+        update comment
+        <set>
+            <if test="memberId != null">
+                member_id = #{memberId,jdbcType=VARCHAR},
+            </if>
+            <if test="forumId != null">
+                forum_id = #{forumId,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

@@ -25,17 +25,10 @@ public class NoticeService {
     @Resource
     private NoticeMapper noticeMapper;
 
-    /**
-     * 查询通知
-     */
-    public Notice selectNotice() {
-
-        return noticeMapper.selectNotice();
+    public Notice selectNotice(Long id) {
+        return noticeMapper.selectNotice(id);
     }
 
-    /**
-     * 修改通知
-     */
     public int updateNotice(Notice notice) {
         return noticeMapper.updateNotice(notice);
     }

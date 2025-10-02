@@ -37,6 +37,16 @@ public class Member {
 
     private String lat;
 
+    private String state;
+
+    public String getState() {
+        return this.state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public String getLng() {
         return lng;
     }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.course.server.mapper.ForumMapper">
+    <resultMap id="BaseResultMap" type="com.course.server.domain.Forum">
+       <id column="id" jdbcType="BIGINT" property="id" />
+       <id column="member_id" jdbcType="VARCHAR" property="memberId" />
+
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="ip" jdbcType="VARCHAR" property="ip" />
+        <result column="state" jdbcType="VARCHAR" property="state" />
+        <result column="create" jdbcType="TIMESTAMP" property="create" />
+        <result column="pic" jdbcType="VARCHAR" property="pic" />
+    </resultMap>
+    <insert id="insert"  parameterType="com.course.server.domain.Forum" useGeneratedKeys="true" keyProperty="id">
+        insert into forum ( member_id,content, ip, state, `create`, pic)
+        values ( #{memberId,jdbcType=VARCHAR},
+                #{content,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR},
+                #{state,jdbcType=VARCHAR},#{create,jdbcType=VARCHAR},#{pic,jdbcType=VARCHAR})
+    </insert>
+    <delete id="delete">
+        delete from forum where id = #{id}
+    </delete>
+    <select id="selectForums" parameterType="com.course.server.domain.Forum"  resultType="com.course.server.domain.Forum">
+        select c.* , m.name memberName from forum c left join member m on c.member_id COLLATE utf8mb4_unicode_ci = m.id
+        <where>
+
+            <if test="memberId != null">
+                and c.member_id = #{memberId}
+            </if>
+            <if test="state != null and state != ''">
+                and c.state = #{state}
+            </if>
+        </where>
+        order by c.id desc
+        limit #{page},#{size}
+    </select>
+    <select id="selectForumsCount" resultType="java.lang.Long">
+        select count(*) from forum
+        <where>
+            <if test="memberId != null">
+                and member_id = #{memberId}
+            </if>
+            <if test="state != null and state != ''">
+                and state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="com.course.server.domain.Forum">
+        update forum
+        <set>
+            <if test="state != null">
+                state = #{state,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>
