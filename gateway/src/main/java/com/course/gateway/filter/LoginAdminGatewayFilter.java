@@ -34,10 +34,13 @@ public class LoginAdminGatewayFilter implements GatewayFilter, Ordered {
 //        if (!path.contains("/admin/")) {
 //            return chain.filter(exchange);
 //        }
-        if (path.contains("/system/admin/user/login")
-                || path.contains("/system/admin/user/logout")
-                || path.contains("/system/admin/kaptcha")
-                || path.contains("/web/member/signIn")) {
+        if (!path.contains("/system/admin/user/login")
+                && !path.contains("/system/admin/user/logout")
+                && !path.contains("/system/admin/kaptcha")
+                && !path.contains("/web/member/signIn")
+                && !path.contains("/web/notice/peacock")
+                && !path.contains("/web/member/getCode")
+                && !path.contains("/web/member/getToken")) {
             LOG.info("不需要控台登录验证：{}", path);
             return chain.filter(exchange);
         }
@@ -45,13 +48,13 @@ public class LoginAdminGatewayFilter implements GatewayFilter, Ordered {
         String token = exchange.getRequest().getHeaders().getFirst("token");
         LOG.info("控台登录验证开始，token：{}", token);
         if (token == null || token.isEmpty()) {
-            LOG.info( "token为空，请求被拦截" );
+            LOG.info("token为空，请求被拦截");
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
         Object object = redisTemplate.opsForValue().get(token);
         if (object == null) {
-            LOG.warn( "token无效，请求被拦截" );
+            LOG.warn("token无效，请求被拦截");
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
@@ -60,7 +63,7 @@ public class LoginAdminGatewayFilter implements GatewayFilter, Ordered {
         LOG.info("接口权限校验，请求地址：{}", path);
         boolean exist = false;
         JSONObject loginUserDto = JSONUtil.parseObj(String.valueOf(object));
-        if(path.contains("/admin/")){
+        if (path.contains("/admin/")) {
             // 管理系统拦截
             JSONArray requests = loginUserDto.getJSONArray("requests");
             // 遍历所有【权限请求】，判断当前请求的地址是否在【权限请求】里
@@ -88,7 +91,7 @@ public class LoginAdminGatewayFilter implements GatewayFilter, Ordered {
                     if (o != null) deviceInfoList = JSONUtil.parseArray(o.toString());
                     // 安卓和ios设备判断
                     List<String> deviceIdList = deviceInfoList.stream().map(deviceInfo
-                                    -> JSONUtil.parseObj(deviceInfo).getStr("deviceId")).collect(Collectors.toList());
+                            -> JSONUtil.parseObj(deviceInfo).getStr("deviceId")).collect(Collectors.toList());
                     if (!StringUtils.isEmpty(mobile) && deviceIdList.contains(deviceId)) exist = true;
                 }
             }
@@ -104,8 +107,7 @@ public class LoginAdminGatewayFilter implements GatewayFilter, Ordered {
     }
 
     @Override
-    public int getOrder()
-    {
+    public int getOrder() {
         return 1;
     }
 }
