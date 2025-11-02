@@ -65,18 +65,20 @@ public class MemberService {
         PageInfo<Member> pageInfo = new PageInfo<>(memberList);
         pageDto.setTotal(pageInfo.getTotal());
         List<MemberDto> memberDtoList = CopyUtil.copyList(memberList, MemberDto.class);
-        memberDtoList.forEach( member -> {
+        memberDtoList.forEach(member -> {
             MemberSectionPass memberSectionPass = sectionPassMapper.selectByMemberId(member.getId());
-            if (memberSectionPass!=null){
+            if (memberSectionPass != null) {
                 member.setChoice(memberSectionPass.getSectionId());
                 Section section = sectionMapper.selectByPrimaryKey(memberSectionPass.getSectionId());
-                if (section!=null) member.setTitle(section.getTitle());
+                if (section != null) member.setTitle(section.getTitle());
             }
         });
         pageDto.setList(memberDtoList);
     }
+
     /**
      * 按手机号查找
+     *
      * @param mobile
      * @return
      */
@@ -84,6 +86,7 @@ public class MemberService {
 
         return memberMapper.findByPhone(mobile);
     }
+
     /**
      * 保存，id有值时更新，无值时新增
      */
@@ -94,7 +97,8 @@ public class MemberService {
         criteria.andMobileEqualTo(member.getMobile());
 
         if (!StringUtils.isEmpty(memberDto.getId())) criteria.andIdNotEqualTo(memberDto.getId());
-        if (memberMapper.countByExample(example) > 0) throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+        if (memberMapper.countByExample(example) > 0)
+            throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
         if (StringUtils.isEmpty(memberDto.getId())) {
             // 密码加密
             member.setPassword(DigestUtils.md5DigestAsHex(memberDto.getPassword().getBytes()));
@@ -108,14 +112,14 @@ public class MemberService {
             this.update(member);
         }
 
-        if (memberDto.getChoice()!=null){
-            ThreadUtil.execAsync(()->{
+        if (memberDto.getChoice() != null) {
+            ThreadUtil.execAsync(() -> {
                 Section section = sectionMapper.selectByPrimaryKey(memberDto.getChoice());
-                List<Section> sections=sectionMapper.selectByTime(section.getCreatedAt());
+                List<Section> sections = sectionMapper.selectByTime(section.getCreatedAt());
                 sectionPassMapper.deleteByUser(member.getId());
-                for (Section s:
+                for (Section s :
                         sections) {
-                    MemberSectionPass memberSectionPass=new MemberSectionPass();
+                    MemberSectionPass memberSectionPass = new MemberSectionPass();
                     memberSectionPass.setId(UuidUtil.getShortUuid());
                     memberSectionPass.setMemberId(member.getId());
                     memberSectionPass.setSectionId(s.getId());
@@ -152,6 +156,7 @@ public class MemberService {
 
     /**
      * 按手机号查找
+     *
      * @param mobile
      * @return
      */
@@ -162,6 +167,7 @@ public class MemberService {
 
     /**
      * 按手机号查找
+     *
      * @param mobile
      * @return
      */
@@ -182,6 +188,7 @@ public class MemberService {
 
     /**
      * 登录
+     *
      * @param memberDto
      */
     public LoginMemberDto login(MemberDto memberDto) {
@@ -198,18 +205,20 @@ public class MemberService {
                 Integer deviceType = memberDto.getDeviceType();
                 loginMemberDto.setFlag("1");
                 loginMemberDto.setDeviceId(memberDto.getDeviceId());
-                if (MemberRoleEnum.ADMINISTRATOR.getCode().equals(member.getRole())){return loginMemberDto;}
+                if (MemberRoleEnum.ADMINISTRATOR.getCode().equals(member.getRole())) {
+                    return loginMemberDto;
+                }
 
                 List<LoginDeviceInfo> list = loginDeviceInfoService.list(memberId);
-                if(list.isEmpty()){
-                    loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType,1);
-                }else if (list.size()==1){
-                    loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType,0);
-                //判断list中是否包含deviceId
-                }else if (list
+                if (list.isEmpty()) {
+                    loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType, 1);
+                } else if (list.size() == 1) {
+                    loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType, 0);
+                    //判断list中是否包含deviceId
+                } else if (list
                         .stream()
                         .allMatch(loginDeviceInfo -> loginDeviceInfo.getDeviceId()
-                                .equals(memberDto.getDeviceId()))){
+                                .equals(memberDto.getDeviceId()))) {
                     member.setIp(memberDto.getIp());
                     this.update(member);
                     return loginMemberDto;
@@ -227,7 +236,7 @@ public class MemberService {
 //                }else {
 //
 //                }
-                LOG.info("设备已满，请使用短信登录",memberDto.getMobile());
+                LOG.info("设备已满，请使用短信登录", memberDto.getMobile());
                 throw new BusinessException(BusinessExceptionCode.THE_DEVICE_IS_FULL);
             } else {
                 LOG.info("密码不对, 输入密码：{}, 数据库密码：{}", memberDto.getPassword(), member.getPassword());
@@ -272,7 +281,7 @@ public class MemberService {
 
     public LoginMemberDto getLoginMember(String token) {
         Object object = redisTemplate.opsForValue().get(token);
-        if(object == null) throw new BusinessException(BusinessExceptionCode.MEMBER_NOT_EXIST);
+        if (object == null) throw new BusinessException(BusinessExceptionCode.MEMBER_NOT_EXIST);
         return JSONUtil.toBean(String.valueOf(object), LoginMemberDto.class);
     }
 
@@ -293,7 +302,7 @@ public class MemberService {
         return memberMapper.updateByPrimaryKeySelective(member);
     }
 
-    public List<MemberDto> listH5(MemberDto memberDto,String token) {
+    public List<MemberDto> listH5(MemberDto memberDto, String token) {
         MemberExample memberExample = new MemberExample();
         MemberExample.Criteria criteria = memberExample.createCriteria();
         if (!StringUtils.isEmpty(memberDto.getMobile())) criteria.andMobileLike('%' + memberDto.getMobile() + '%');
@@ -301,12 +310,12 @@ public class MemberService {
         memberExample.setId(this.getLoginMember(token).getId());
         List<Member> memberList = memberMapper.selectByExampleH5(memberExample);
         List<MemberDto> memberDtoList = CopyUtil.copyList(memberList, MemberDto.class);
-        memberDtoList.forEach( member -> {
+        memberDtoList.forEach(member -> {
             MemberSectionPass memberSectionPass = sectionPassMapper.selectByMemberId(member.getId());
-            if (memberSectionPass!=null){
+            if (memberSectionPass != null) {
                 member.setChoice(memberSectionPass.getSectionId());
                 Section section = sectionMapper.selectByPrimaryKey(memberSectionPass.getSectionId());
-                if (section!=null) member.setTitle(section.getTitle());
+                if (section != null) member.setTitle(section.getTitle());
             }
         });
         return memberDtoList;
@@ -324,5 +333,32 @@ public class MemberService {
         member.setId(id);
         member.setState("0");
         memberMapper.updateByPrimaryKeySelective(member);
+    }
+
+    public LoginMemberDto signInCode(MemberDto memberDto) {
+        Member member = selectByMobile(memberDto.getMobile());
+        if (member == null) {
+            LOG.info("手机号不存在, {}", memberDto.getMobile());
+            throw new BusinessException(BusinessExceptionCode.LOGIN_MEMBER_ERROR);
+        }
+        //获取redis中的密码
+        String redisPassword = (String) redisTemplate.opsForValue().get(memberDto.getMobile());
+        //获取redis万能验证码universal_verification_code
+        String universalVerificationCode = (String) redisTemplate.opsForValue().get("universal_verification_code");
+        if (redisPassword.equals(memberDto.getSmsCode()) || universalVerificationCode.equals(memberDto.getSmsCode())) {
+            // 登录成功
+            LoginMemberDto loginMemberDto = CopyUtil.copy(member, LoginMemberDto.class);
+            String memberId = loginMemberDto.getId();
+            String deviceId = memberDto.getDeviceId();
+            Integer deviceType = memberDto.getDeviceType();
+            loginMemberDto.setFlag("1");
+            loginMemberDto.setDeviceId(memberDto.getDeviceId());
+            if (MemberRoleEnum.ADMINISTRATOR.getCode().equals(member.getRole())) {
+                return loginMemberDto;
+            }
+        }
+        throw new BusinessException(BusinessExceptionCode.MOBILE_CODE_ERROR);
+
+
     }
 }

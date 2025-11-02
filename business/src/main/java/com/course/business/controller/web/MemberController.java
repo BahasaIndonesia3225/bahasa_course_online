@@ -120,6 +120,8 @@ public class MemberController {
     }
 
 
+
+
     /**
      * 用户扫码登陆
      */
@@ -281,6 +283,23 @@ public class MemberController {
      * 发送用户登录验证码
      *
      */
+    @RequestMapping(value = "/sendCode", method = RequestMethod.GET)
+    public ResponseDto sendCode(@RequestBody SmsDto smsDto) {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setContent(smsService.sendCode(smsDto));
+        return responseDto;
+    }
+
+    /**
+     * 验证码登录
+     *
+     */
+    @PostMapping("/signInCode")
+    public ResponseDto signInCode(@RequestBody MemberDto memberDto) {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setContent(memberService.signInCode(memberDto));
+        return responseDto;
+    }
 
 
     /**
