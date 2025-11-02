@@ -16,6 +16,7 @@
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
     <result column="teacher_id" jdbcType="CHAR" property="teacherId" />
+      <result column="link_down_load" jdbcType="CHAR" property="linkDownLoad" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -77,7 +78,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, summary, time, price, image, level, charge, status, enroll, sort, created_at, 
-    updated_at, teacher_id
+    updated_at, teacher_id, link_down_load
   </sql>
   <select id="selectByExample" parameterType="com.course.server.domain.CourseExample" resultMap="BaseResultMap">
     select
@@ -114,12 +115,12 @@
       time, price, image, 
       level, charge, status, enroll, 
       sort, created_at, updated_at, 
-      teacher_id)
+      teacher_id, link_down_load)
     values (#{id,jdbcType=CHAR}, #{name,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR}, 
       #{time,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{image,jdbcType=VARCHAR}, 
       #{level,jdbcType=CHAR}, #{charge,jdbcType=CHAR}, #{status,jdbcType=CHAR}, #{enroll,jdbcType=INTEGER}, 
       #{sort,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
-      #{teacherId,jdbcType=CHAR})
+      #{teacherId,jdbcType=CHAR}, #{linkDownLoad,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.course.server.domain.Course">
     insert into course
@@ -166,6 +167,9 @@
       <if test="teacherId != null">
         teacher_id,
       </if>
+        <if test="linkDownLoad" >!= null">
+            link_down_load,
+        </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -210,6 +214,9 @@
       <if test="teacherId != null">
         #{teacherId,jdbcType=CHAR},
       </if>
+        <if test="linkDownLoad != null">
+            #{linkDownLoad,jdbcType=CHAR},
+        </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.course.server.domain.CourseExample" resultType="java.lang.Long">
@@ -263,6 +270,9 @@
       <if test="record.teacherId != null">
         teacher_id = #{record.teacherId,jdbcType=CHAR},
       </if>
+        <if test="record.linkDownLoad != null">
+            link_down_load = #{record.linkDownLoad,jdbcType=CHAR},
+        </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -283,7 +293,8 @@
       sort = #{record.sort,jdbcType=INTEGER},
       created_at = #{record.createdAt,jdbcType=TIMESTAMP},
       updated_at = #{record.updatedAt,jdbcType=TIMESTAMP},
-      teacher_id = #{record.teacherId,jdbcType=CHAR}
+      teacher_id = #{record.teacherId,jdbcType=CHAR},
+      link_down_load = #{record.linkDownLoad,jdbcType=CHAR},
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -330,6 +341,9 @@
       <if test="teacherId != null">
         teacher_id = #{teacherId,jdbcType=CHAR},
       </if>
+        <if test="linkDownLoad != null">
+            link_down_load = #{linkDownLoad,jdbcType=CHAR},
+        </if>
     </set>
     where id = #{id,jdbcType=CHAR}
   </update>
@@ -347,7 +361,8 @@
       sort = #{sort,jdbcType=INTEGER},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      teacher_id = #{teacherId,jdbcType=CHAR}
+      teacher_id = #{teacherId,jdbcType=CHAR},
+      link_down_load = #{linkDownLoad,jdbcType=CHAR},
     where id = #{id,jdbcType=CHAR}
   </update>
 </mapper>

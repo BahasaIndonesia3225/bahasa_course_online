@@ -19,6 +19,16 @@ public class LoginDeviceInfo implements Serializable {
 
     private Integer deviceType;
 
+    private Integer type;
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public String getId() {
         return id;
     }

@@ -27,9 +27,9 @@ public class NoticeApiController {
      * 列表查询
      */
     @GetMapping("/all")
-    public ResponseDto all() {
+    public ResponseDto all(Long id) {
         ResponseDto responseDto = new ResponseDto();
-        responseDto.setContent(noticeService.selectNotice());
+        responseDto.setContent(noticeService.selectNotice(id));
         return responseDto;
     }
 

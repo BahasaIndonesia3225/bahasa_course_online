@@ -55,6 +55,7 @@ public class MemberDto {
 
     private String title;
 
+
     public String getTitle() {
         return title;
     }

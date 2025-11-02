@@ -13,7 +13,7 @@ public enum BusinessExceptionCode {
     LOGIN_DEVICE_UPPER_LIMIT("A0100","登陆设备以达到上限，请联系管理员清除不常用设备"),
     LOGIN_DEVICE_NOT_FOUND("A0101","登陆设备不存在"),
     ACCESS_RATE_LIMITER("A0201","访问过于频繁，请稍候再试"),
-
+    THE_DEVICE_IS_FULL("A0205","设备已满，请使用短信登录"),
     USER_PHONE_LOGIN_NAME_EXIST("A0009","手机号码已存在"),
     ;
 

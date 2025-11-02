@@ -87,6 +87,16 @@ public class CourseDto {
 
     private String teacherId;
 
+    private String linkDownLoad;
+
+    public String getLinkDownLoad() {
+        return linkDownLoad;
+    }
+
+    public void setLinkDownLoad(String linkDownLoad) {
+        this.linkDownLoad = linkDownLoad;
+    }
+
     public String getId() {
         return id;
     }

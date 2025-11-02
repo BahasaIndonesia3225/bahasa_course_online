@@ -3,10 +3,7 @@ package com.course.server.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.json.JSONUtil;
-import com.course.server.domain.Member;
-import com.course.server.domain.MemberExample;
-import com.course.server.domain.MemberSectionPass;
-import com.course.server.domain.Section;
+import com.course.server.domain.*;
 import com.course.server.dto.LoginMemberDto;
 import com.course.server.dto.MemberDto;
 import com.course.server.dto.MemberPageDto;
@@ -202,19 +199,36 @@ public class MemberService {
                 loginMemberDto.setFlag("1");
                 loginMemberDto.setDeviceId(memberDto.getDeviceId());
                 if (MemberRoleEnum.ADMINISTRATOR.getCode().equals(member.getRole())){return loginMemberDto;}
-                // 判断设备ID是否存在
-                if (deviceId == null || deviceType == null || loginDeviceInfoService.countByMemberIdAndDeviceId(memberId, deviceId) <= 0) {
-                    // 判断登陆设备是否达到上限
-                    long deviceNumber = loginDeviceInfoService.countByMemberId(memberId);
-                    if (deviceNumber >= member.getDeviceLimitNum()){
-                        loginMemberDto.setFlag("0");
-                        return loginMemberDto;
-                    }
-                    if(deviceType != null && deviceId != null) loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType);
+
+                List<LoginDeviceInfo> list = loginDeviceInfoService.list(memberId);
+                if(list.isEmpty()){
+                    loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType,1);
+                }else if (list.size()==1){
+                    loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType,0);
+                //判断list中是否包含deviceId
+                }else if (list
+                        .stream()
+                        .allMatch(loginDeviceInfo -> loginDeviceInfo.getDeviceId()
+                                .equals(memberDto.getDeviceId()))){
+                    member.setIp(memberDto.getIp());
+                    this.update(member);
+                    return loginMemberDto;
                 }
-                member.setIp(memberDto.getIp());
-                this.update(member);
-                return loginMemberDto;
+
+//                // 判断设备ID是否存在
+//                if (deviceId == null || deviceType == null || loginDeviceInfoService.countByMemberIdAndDeviceId(memberId, deviceId) <= 0) {
+//                    // 判断登陆设备是否达到上限
+//                    long deviceNumber = loginDeviceInfoService.countByMemberId(memberId);
+//                    if (deviceNumber >= member.getDeviceLimitNum()){
+//                        loginMemberDto.setFlag("0");
+//                        return loginMemberDto;
+//                    }
+//                    if(deviceType != null && deviceId != null) loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType);
+//                }else {
+//
+//                }
+                LOG.info("设备已满，请使用短信登录",memberDto.getMobile());
+                throw new BusinessException(BusinessExceptionCode.THE_DEVICE_IS_FULL);
             } else {
                 LOG.info("密码不对, 输入密码：{}, 数据库密码：{}", memberDto.getPassword(), member.getPassword());
                 throw new BusinessException(BusinessExceptionCode.LOGIN_MEMBER_ERROR);
