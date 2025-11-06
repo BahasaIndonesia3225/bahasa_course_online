@@ -34,12 +34,17 @@ public class LoginAdminGatewayFilter implements GatewayFilter, Ordered {
 //        if (!path.contains("/admin/")) {
 //            return chain.filter(exchange);
 //        }
-        if (!path.contains("/system/admin/user/login")
-                && !path.contains("/system/admin/user/logout")
-                && !path.contains("/system/admin/kaptcha")
-                && !path.contains("/web/member/signIn")
-                && !path.contains("/web/notice/peacock")
-                && !path.contains("/web/member/getCode") && !path.contains("/web/member/getToken")) {
+
+        if (path.contains("/system/admin/user/login")
+                || path.contains("/system/admin/user/logout")
+                || path.contains("/system/admin/kaptcha/image-code")
+                ||path.contains("/web/member/signIn")
+                || path.contains("/web/notice/peacock")
+                || path.contains("/web/member/getCode")
+                || path.contains("/web/member/getToken")
+                || path.contains("/web/member/sendCode")
+                || path.contains("/web/member/signInCode")
+        ) {
             LOG.info("不需要控台登录验证：{}", path);
             return chain.filter(exchange);
         }

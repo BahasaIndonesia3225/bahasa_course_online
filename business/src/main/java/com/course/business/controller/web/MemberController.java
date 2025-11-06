@@ -294,8 +294,8 @@ public class MemberController {
      * 验证码登录
      *
      */
-    @PostMapping("/signInCode")
-    public ResponseDto signInCode(@RequestBody MemberDto memberDto) {
+    @PostMapping("/signInSms")
+    public ResponseDto signInSms(@RequestBody MemberDto memberDto) {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setContent(memberService.signInCode(memberDto));
         return responseDto;
