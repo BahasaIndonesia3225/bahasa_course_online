@@ -25,6 +25,26 @@ public class Section {
 
     private String vod;
 
+    private String aliCloudLink;
+
+    private String googleCloudLink;
+
+    public String getGoogleCloudLink() {
+        return googleCloudLink;
+    }
+
+    public void setGoogleCloudLink(String googleCloudLink) {
+        this.googleCloudLink = googleCloudLink;
+    }
+
+    public String getAliCloudLink() {
+        return aliCloudLink;
+    }
+
+    public void setAliCloudLink(String aliCloudLink) {
+        this.aliCloudLink = aliCloudLink;
+    }
+
     public String getId() {
         return id;
     }

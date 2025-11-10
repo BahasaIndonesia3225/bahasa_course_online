@@ -58,6 +58,27 @@ public class SectionDto {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updatedAt;
 
+
+    private String aliCloudLink;
+
+    private String googleCloudLink;
+
+    public String getGoogleCloudLink() {
+        return googleCloudLink;
+    }
+
+    public void setGoogleCloudLink(String googleCloudLink) {
+        this.googleCloudLink = googleCloudLink;
+    }
+
+    public String getAliCloudLink() {
+        return aliCloudLink;
+    }
+
+    public void setAliCloudLink(String aliCloudLink) {
+        this.aliCloudLink = aliCloudLink;
+    }
+
     private String vod;
 
     private Integer isPass = 1;

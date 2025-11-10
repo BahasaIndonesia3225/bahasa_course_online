@@ -208,34 +208,33 @@ public class MemberService {
                 if (MemberRoleEnum.ADMINISTRATOR.getCode().equals(member.getRole())) {
                     return loginMemberDto;
                 }
-
-                List<LoginDeviceInfo> list = loginDeviceInfoService.list(memberId);
-                if (list.isEmpty()) {
-                    loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType, 1);
-                } else if (list.size() == 1) {
-                    loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType, 0);
-                    //判断list中是否包含deviceId
-                } else if (list
-                        .stream()
-                        .allMatch(loginDeviceInfo -> loginDeviceInfo.getDeviceId()
-                                .equals(memberDto.getDeviceId()))) {
-                    member.setIp(memberDto.getIp());
-                    this.update(member);
-                    return loginMemberDto;
+                if ((deviceId != null || deviceType != null) && (deviceType == 5|| deviceType == 6 || deviceType == 7)){
+                    List<LoginDeviceInfo> list = loginDeviceInfoService.list(memberId);
+                    if (list.isEmpty()) {
+                        loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType, 1);
+                    } else if (list.size() == 1) {
+                        loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType, 0);
+                        //判断list中是否包含deviceId
+                    } else if (list
+                            .stream()
+                            .allMatch(loginDeviceInfo -> loginDeviceInfo.getDeviceId()
+                                    .equals(memberDto.getDeviceId()))) {
+                        member.setIp(memberDto.getIp());
+                        this.update(member);
+                        return loginMemberDto;
+                    }
                 }
 
+
 //                // 判断设备ID是否存在
-//                if (deviceId == null || deviceType == null || loginDeviceInfoService.countByMemberIdAndDeviceId(memberId, deviceId) <= 0) {
-//                    // 判断登陆设备是否达到上限
-//                    long deviceNumber = loginDeviceInfoService.countByMemberId(memberId);
-//                    if (deviceNumber >= member.getDeviceLimitNum()){
-//                        loginMemberDto.setFlag("0");
-//                        return loginMemberDto;
-//                    }
-//                    if(deviceType != null && deviceId != null) loginDeviceInfoService.saveLoginDevice(memberId, deviceId, deviceType);
-//                }else {
-//
-//                }
+                if (deviceId == null || deviceType == null || loginDeviceInfoService.countByMemberIdAndDeviceId(memberId, deviceId) <= 0) {
+                    // 判断登陆设备是否达到上限
+                    long deviceNumber = loginDeviceInfoService.countByMemberId(memberId);
+                    if (deviceNumber >= member.getDeviceLimitNum()){
+                        loginMemberDto.setFlag("0");
+                        return loginMemberDto;
+                    }
+                                   }
                 LOG.info("设备已满，请使用短信登录", memberDto.getMobile());
                 throw new BusinessException(BusinessExceptionCode.THE_DEVICE_IS_FULL);
             } else {

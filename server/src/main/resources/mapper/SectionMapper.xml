@@ -13,6 +13,8 @@
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
     <result column="vod" jdbcType="CHAR" property="vod" />
+      <result column="a_li_cloud_link" jdbcType="CHAR" property="aliCloudLink" />
+      <result column="google_cloud_link" jdbcType="CHAR" property="googleCloudLink" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -73,7 +75,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, title, course_id, chapter_id, video, `time`, charge, sort, created_at, updated_at, 
+    id, title, course_id, chapter_id, video,a_li_cloud_link,google_cloud_link, `time`, charge, sort, created_at, updated_at,
     vod
   </sql>
   <select id="selectByExample" parameterType="com.course.server.domain.SectionExample" resultMap="BaseResultMap">
@@ -110,11 +112,12 @@
     insert into section (id, title, course_id, 
       chapter_id, video, `time`, 
       charge, sort, created_at, 
-      updated_at, vod)
+      updated_at, vod,a_li_cloud_link,google_cloud_link)
     values (#{id,jdbcType=CHAR}, #{title,jdbcType=VARCHAR}, #{courseId,jdbcType=CHAR}, 
       #{chapterId,jdbcType=CHAR}, #{video,jdbcType=VARCHAR}, #{time,jdbcType=INTEGER}, 
       #{charge,jdbcType=CHAR}, #{sort,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
-      #{updatedAt,jdbcType=TIMESTAMP}, #{vod,jdbcType=CHAR})
+      #{updatedAt,jdbcType=TIMESTAMP}, #{vod,jdbcType=CHAR}, #{aliCloudLink,jdbcType=CHAR},
+      #{googleCloudLink,jdbcType=CHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.course.server.domain.Section">
     insert into section
@@ -152,6 +155,12 @@
       <if test="vod != null">
         vod,
       </if>
+      <if test="aliCloudLink != null">
+        a_li_cloud_link,
+      </if>
+        <if test="googleCloudLink != null">
+        google_cloud_link,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -186,6 +195,12 @@
       </if>
       <if test="vod != null">
         #{vod,jdbcType=CHAR},
+      </if>
+       <if test="aliCloudLink != null">
+        #{aliCloudLink,jdbcType=CHAR},
+      </if>
+        <if test="googleCloudLink != null">
+        #{googleCloudLink,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
@@ -236,6 +251,12 @@ where created_at <![CDATA[ <= ]]> #{time}
       <if test="record.vod != null">
         vod = #{record.vod,jdbcType=CHAR},
       </if>
+        <if test="record.aliCloudLink != null">
+        a_li_cloud_link = #{record.aliCloudLink,jdbcType=CHAR},
+      </if>
+        <if test="record.googleCloudLink != null">
+        google_cloud_link = #{record.googleCloudLink,jdbcType=CHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -253,7 +274,10 @@ where created_at <![CDATA[ <= ]]> #{time}
       sort = #{record.sort,jdbcType=INTEGER},
       created_at = #{record.createdAt,jdbcType=TIMESTAMP},
       updated_at = #{record.updatedAt,jdbcType=TIMESTAMP},
-      vod = #{record.vod,jdbcType=CHAR}
+      vod = #{record.vod,jdbcType=CHAR},
+      link_down_load = #{record.linkDownLoad,jdbcType=CHAR},
+      a_li_cloud_link = #{record.aliCloudLink,jdbcType=CHAR},
+      google_cloud_link = #{record.googleCloudLink,jdbcType=CHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -291,6 +315,13 @@ where created_at <![CDATA[ <= ]]> #{time}
       <if test="vod != null">
         vod = #{vod,jdbcType=CHAR},
       </if>
+
+        <if test="aliCloudLink != null">
+        a_li_cloud_link = #{aliCloudLink,jdbcType=CHAR},
+      </if>
+        <if test="googleCloudLink != null">
+        google_cloud_link = #{googleCloudLink,jdbcType=CHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=CHAR}
   </update>
@@ -305,7 +336,9 @@ where created_at <![CDATA[ <= ]]> #{time}
       sort = #{sort,jdbcType=INTEGER},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
       updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      vod = #{vod,jdbcType=CHAR}
+      vod = #{vod,jdbcType=CHAR},
+      a_li_cloud_link= #{aliCloudLink,jdbcType=CHAR},
+      google_cloud_link= #{googleCloudLink,jdbcType=CHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
 </mapper>
